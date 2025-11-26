@@ -59,13 +59,14 @@ func commandMapf(cfg *Config) error{
 }
 
 func commandMapb(cfg *Config) error{
-	locations, err := cfg.Client.ListLocations(*cfg.nextURL)
-	if err != nil{
-		return errors.New("Issue with fetching API")
+	
+	if cfg.previousURL == nil{
+		return errors.New("You are on the first page")
 	}
 
-	if locations.Previous == nil{
-		return errors.New("You are on the first page")
+	locations, err := cfg.Client.ListLocations(*cfg.previousURL)
+	if err != nil{
+		return errors.New("Issue with fetching API")
 	}
 
 	for _, location := range locations.Results{
