@@ -3,9 +3,9 @@ package pokeapi
 
 import(
 	"net/http"
-	"fmt"
 	"time"
 	"encoding/json"
+	"io"
 )
 
 type LocationAreaResponse struct{
@@ -25,7 +25,7 @@ type Client struct{
 func NewClient(timeout time.Duration) Client{
 	return Client{
 		httpClient: http.Client{
-			Timeout: timout, 
+			Timeout: timeout, 
 		},
 	}
 }
@@ -34,8 +34,8 @@ func NewClient(timeout time.Duration) Client{
 
 func (c *Client) ListLocations(url string)(LocationAreaResponse, error){
 	
-	client := &c
-	req, err := http.NewRequest("GET", url)
+	client := c.httpClient
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil{
 		return LocationAreaResponse{}, err
 	}

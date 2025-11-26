@@ -6,15 +6,15 @@ import(
 "fmt"
 "bufio"
 "os"
-"internal/pokeapi"
+"github.com/rgarcia2304/pokedexcli/internal"
 "time"
 )
 
 var validCommands map[string]cliCommand 
 
 type Config struct{
-	nextURL* string
-	previousURL* string
+	nextURL *string
+	previousURL *string
 	pokeapi.Client 
 }
 
@@ -35,12 +35,12 @@ func main(){
 		"mapf":{
 			name: "map",
 			description: "Gives locations of pokemon",
-			callback: mapf,
+			callback: commandMapf,
 		},
 		"mapb":{
 			name:"mapb",
 			description: "Gives locations of pokemon",
-			callback: mapb,
+			callback: commandMapb,
 		},
 	}			
 	
@@ -48,11 +48,10 @@ func main(){
 
 	//initialize all the config struct fields 
 
-	client := NewClient(time.Second * 10)
+	client := pokeapi.NewClient(time.Second * 10)
+	baseURL := "https://pokeapi.co/api/v2/location-area/" 
 	
-	init_config := Config{
-		nextURL: "https://pokeapi.co/api/v2/location-area/",
-		pokeapi.Client: client}
+	init_config := Config{nextURL: &baseURL, Client: client}
 	
 	
 	//start scanning for input 
@@ -65,15 +64,16 @@ func main(){
 		cleanedScan := cleanInput(scannerVal)
 
 		//capture first word of input
-		val, err := validCommands[cleanedScan[0]]
-		if !err{
+		cmd, ok := validCommands[cleanedScan[0]]
+		if !ok{
 			fmt.Println("Unknown Command")
+			continue
 		}else{
-			//act on the action of the command 
-			val.callback()		
+			//act on the action of the command
+			if err := cmd.callback(&init_config); err != nil{
+				fmt.Println(err)
+			}
 		}
-
-		
 	}
 
 }

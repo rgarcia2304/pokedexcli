@@ -4,26 +4,26 @@ import(
 
 	"os"
 	"fmt"
-	"github.com/rgarcia2304/pokedecxcli/internal/pokeapi"
+	"errors"
 )
 
 
 type cliCommand struct{
 	name string 
 	description string
-	callback func() error
+	callback func(*Config) error
 }
 
 
 
 
-func commandExit(*config) error{
+func commandExit(cfg *Config) error{
 	fmt.Println("Closing the Pokedex... Gooddbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(*Config) error{
+func commandHelp(cfg *Config) error{
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage")
 	for key, val := range validCommands{
@@ -33,38 +33,49 @@ func commandHelp(*Config) error{
 	return nil
 }
 
-func commandMapf(*Config) error{
+func commandMapf(cfg *Config) error{
 	
-	//get the initial response 
-	locations,err := Config.pokeapi.Client.ListLocations(*config.nextURL)
+	//get the initial response
 
-	if locations.Next == nil{
-		fmt.Println("You are on the first page")	
-	}else{
-		for _, location:= range location{
+	locations, err := cfg.Client.ListLocations(*cfg.nextURL)
+
+	if cfg.nextURL == nil{
+		return errors.New("This is the last page")
+	}
+
+	if err != nil{
+		return errors.New("Issue with the API fetching resource")
+	}
+
+	for _, location:= range locations.Results{
 			fmt.Println(location.Name)
 		}
-	}
+	
 	
 	// update the previous and new based on the repsonse
-	Config.nextURL = locations.Next
-	Config.prevURL = locations.Prev
+	cfg.nextURL = locations.Next
+	cfg.previousURL = locations.Previous
 	return nil
 }
 
-func commandMapb(*Config) error{
-	locations, err := Config.pokeapi.Client.ListLocations(*config.nextURL)
-	if locations.Prev == nil{
-		fmt.Println("You are on the first page")
-	}else{
-		for _, location := range locations.Result{
-			fmt.Println(location.Name)
-		}
+func commandMapb(cfg *Config) error{
+	locations, err := cfg.Client.ListLocations(*cfg.nextURL)
+	if err != nil{
+		return errors.New("Issue with fetching API")
 	}
+
+	if locations.Previous == nil{
+		return errors.New("You are on the first page")
+	}
+
+	for _, location := range locations.Results{
+		fmt.Println(location.Name)
+		}
+	
 	
 	// update the previous and new based on the repsonse
-	Config.nextURL = locations.Next
-	Config.prevURL = locations.Prev
+	cfg.nextURL = locations.Next
+	cfg.previousURL = locations.Previous
 	return nil
 
 }
