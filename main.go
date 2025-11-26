@@ -6,9 +6,17 @@ import(
 "fmt"
 "bufio"
 "os"
+"internal/pokeapi"
+"time"
 )
 
 var validCommands map[string]cliCommand 
+
+type Config struct{
+	nextURL* string
+	previousURL* string
+	pokeapi.Client 
+}
 
 func main(){
 	
@@ -24,9 +32,30 @@ func main(){
 			description: "Displays a help message",
 			callback: commandHelp,
 		},
+		"mapf":{
+			name: "map",
+			description: "Gives locations of pokemon",
+			callback: mapf,
+		},
+		"mapb":{
+			name:"mapb",
+			description: "Gives locations of pokemon",
+			callback: mapb,
+		},
 	}			
 	
 	}()
+
+	//initialize all the config struct fields 
+
+	client := NewClient(time.Second * 10)
+	
+	init_config := Config{
+		nextURL: "https://pokeapi.co/api/v2/location-area/",
+		pokeapi.Client: client}
+	
+	
+	//start scanning for input 
 	scanner := bufio.NewScanner(os.Stdin)
 	for{
 		fmt.Print("Pokedex > ")
