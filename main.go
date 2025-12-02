@@ -52,11 +52,11 @@ func main(){
 	//initialize all the config struct fields 
 	
 	//initialize the cache that will be used 
-	cache := pokecache.NewCache(time.Second * 5)
-	client := pokeapi.NewClient(time.Second * 10)
+	pokemonCache := pokecache.NewCache(time.Second * 5)
+	client := pokeapi.NewClient(time.Second * 10, pokemonCache)
 	baseURL := "https://pokeapi.co/api/v2/location-area/" 
 	
-	init_config := Config{nextURL: &baseURL, Client: client, Cache: cache}
+	init_config := Config{nextURL: &baseURL, Client: client}
 	
 	
 	//start scanning for input 

@@ -2,8 +2,6 @@ package pokecache
 
 import(
 	"time"
-	"errors"
-	"fmt"
 	"sync"
 )
 
@@ -21,8 +19,9 @@ type cacheEntry struct{
 }
 
 func NewCache(interval time.Duration) *Cache{
+	nmap := make(map[string]cacheEntry)
 	cch := Cache{lifetime: interval, 
-	centry: make(map[string]cacheEntry}
+		centry: nmap}
 	go cch.reapLoop()
 	return &cch
 
@@ -34,7 +33,7 @@ func (c *Cache) Add(key string, val []byte){
 	c.centry[key] = cacheEntry{value: val, createdAt: time.Now()}
 }
 
-func (c *Cache) Get(key string) []byte, bool{
+func (c *Cache) Get(key string) ([]byte, bool){
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	val, ok := c.centry[key]

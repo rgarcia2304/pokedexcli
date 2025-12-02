@@ -6,6 +6,7 @@ import(
 	"time"
 	"encoding/json"
 	"io"
+	"github.com/rgarcia2304/pokedexcli/internal/pokecache"
 )
 
 type LocationAreaResponse struct{
@@ -20,24 +21,26 @@ type LocationAreaResponse struct{
 
 type Client struct{
 	httpClient http.Client
+	cache *pokecache.Cache
 }
 
-func NewClient(timeout time.Duration) Client{
+func NewClient(timeout time.Duration, cache *pokecache.Cache) Client{
 	return Client{
 		httpClient: http.Client{
-			Timeout: timeout, 
+			Timeout: timeout,
 		},
+		cache: cache,
 	}
 }
 
 
 
-func (c *Client) ListLocations(url string, cfg *Config)(LocationAreaResponse, error){
+func (c *Client) ListLocations(url string)(LocationAreaResponse, error){
 	
 
 	//Before making request check if entry is in cache 
 	locationresp := LocationAreaResponse{}
-	cacheResponse, found := cfg.Cache.Get(url)
+	cacheResponse, found := c.cache.Get(url)
 	if found{
 		//will get the raw bytes from the response
 		if err := json.Unmarshal(cacheResponse, &locationresp); err != nil{
@@ -63,7 +66,7 @@ func (c *Client) ListLocations(url string, cfg *Config)(LocationAreaResponse, er
 	}
 
 	//cache the response
-	pokecache.Add(url, body)
+	c.cache.Add(url, body)
 	
 	return locationresp, nil
 
