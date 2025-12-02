@@ -37,7 +37,7 @@ func commandMapf(cfg *Config) error{
 	
 	//get the initial response
 
-	locations, err := cfg.Client.ListLocations(*cfg.nextURL)
+	locations, err := cfg.Client.ListLocations(*cfg.nextURL, cfg.Cache)
 
 	if cfg.nextURL == nil{
 		return errors.New("This is the last page")
@@ -64,7 +64,7 @@ func commandMapb(cfg *Config) error{
 		return errors.New("You are on the first page")
 	}
 
-	locations, err := cfg.Client.ListLocations(*cfg.previousURL)
+	locations, err := cfg.Client.ListLocations(*cfg.previousURL, cfg.Cache)
 	if err != nil{
 		return errors.New("Issue with fetching API")
 	}

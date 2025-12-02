@@ -7,6 +7,8 @@ import(
 "bufio"
 "os"
 "github.com/rgarcia2304/pokedexcli/internal"
+"github.com/rgarcia2304/pokedexcli/internal/pokecache"
+
 "time"
 )
 
@@ -16,6 +18,7 @@ type Config struct{
 	nextURL *string
 	previousURL *string
 	pokeapi.Client 
+	pokecache.Cache
 }
 
 func main(){
@@ -47,11 +50,13 @@ func main(){
 	}()
 
 	//initialize all the config struct fields 
-
+	
+	//initialize the cache that will be used 
+	cache := pokecache.NewCache(time.Second * 5)
 	client := pokeapi.NewClient(time.Second * 10)
 	baseURL := "https://pokeapi.co/api/v2/location-area/" 
 	
-	init_config := Config{nextURL: &baseURL, Client: client}
+	init_config := Config{nextURL: &baseURL, Client: client, Cache: cache}
 	
 	
 	//start scanning for input 

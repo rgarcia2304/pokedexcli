@@ -21,28 +21,29 @@ type cacheEntry struct{
 }
 
 func NewCache(interval time.Duration) *Cache{
-	cch := Cache{lifetime: interval}
+	cch := Cache{lifetime: interval, 
+	centry: make(map[string]cacheEntry}
 	go cch.reapLoop()
-	return cch
+	return &cch
 
 }
 
 func (c *Cache) Add(key string, val []byte){
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.centry[key] = cacheEntry{value: val}
+	c.centry[key] = cacheEntry{value: val, createdAt: time.Now()}
 }
 
 func (c *Cache) Get(key string) []byte, bool{
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	val, ok := c.centry[string]
+	val, ok := c.centry[key]
 
 	if !ok{
 		return nil, false
 	}
 
-	return val, ok 
+	return val.value, ok 
 }
 
 func (c *Cache) reapLoop(){
@@ -53,11 +54,11 @@ func (c *Cache) reapLoop(){
 
 		c.mu.Lock() //lock the cache for read 
 		for key, val := range c.centry{
-			if val.After(c.lifetime){
+			comp := time.Now().Add(-c.lifetime)
+			if val.createdAt.Before(comp){
 				delete(c.centry, key)	
 			}
 		}
 		c.mu.Unlock()
-
 	}
 }

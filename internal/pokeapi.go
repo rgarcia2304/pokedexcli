@@ -32,8 +32,21 @@ func NewClient(timeout time.Duration) Client{
 
 
 
-func (c *Client) ListLocations(url string)(LocationAreaResponse, error){
+func (c *Client) ListLocations(url string, cfg *Config)(LocationAreaResponse, error){
 	
+
+	//Before making request check if entry is in cache 
+	locationresp := LocationAreaResponse{}
+	cacheResponse, found := cfg.Cache.Get(url)
+	if found{
+		//will get the raw bytes from the response
+		if err := json.Unmarshal(cacheResponse, &locationresp); err != nil{
+			return LocationAreaResponse{}, err
+		}
+
+		return locationresp, nil
+	}
+
 	client := c.httpClient
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil{
@@ -44,11 +57,13 @@ func (c *Client) ListLocations(url string)(LocationAreaResponse, error){
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
-
-	locationresp := LocationAreaResponse{}
+	
 	if err := json.Unmarshal(body, &locationresp); err != nil{
 		return LocationAreaResponse{}, err
 	}
+
+	//cache the response
+	pokecache.Add(url, body)
 	
 	return locationresp, nil
 
