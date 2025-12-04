@@ -96,8 +96,8 @@ func commandExplore(cfg *Config, args ...string) error{
 		return errors.New("Issue with fetching API")
 	}
 
-	for _, pokemonName := range pokeNames.Names {
-		fmt.Println(pokemonName.Name)
+	for _, pokemonName := range pokeNames.PokemonEncounters{
+		fmt.Println(pokemonName)
 		}
 	
 		return nil
