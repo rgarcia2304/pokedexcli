@@ -12,11 +12,17 @@ import(
 type LocationAreaResponse struct{
 	Count int `json:"count"`
 	Next *string `json:"next"`
-	Previous *string `json:"previous`
+	Previous *string `json:"previous"`
 	Results []struct {
 		Name string `json:"name"`
 		URL string `json:"url"`
 	}`json:"results"`
+}
+
+type ExploreAreaResponse struct{
+	Names []struct{
+		Name string `json:"name"`
+	}
 }
 
 type Client struct{
@@ -69,5 +75,41 @@ func (c *Client) ListLocations(url string)(LocationAreaResponse, error){
 	c.cache.Add(url, body)
 	
 	return locationresp, nil
+
+}
+
+func (c *Client) ExploreArea(url string) (ExploreAreaResponse, error){
+	areaResp := ExploreAreaResponse{}
+	cacheResp, found := c.cache.Get(url)
+
+		if found{
+		//will get the raw bytes from the response
+		if err := json.Unmarshal(cacheResp, &areaResp); err != nil{
+			return ExploreAreaResponse{}, err
+		}
+
+		return areaResp, nil
+	}
+
+	client := c.httpClient
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil{
+		return ExploreAreaResponse{}, err
+	}
+
+	res, err := client.Do(req)
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	
+	if err := json.Unmarshal(body, &areaResp); err != nil{
+		return ExploreAreaResponse{}, err
+	}
+
+	//cache the response
+	c.cache.Add(url, body)
+	
+	return areaResp, nil
+
 
 }

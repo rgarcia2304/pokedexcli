@@ -11,19 +11,19 @@ import(
 type cliCommand struct{
 	name string 
 	description string
-	callback func(*Config) error
+	callback func(*Config, ...string) error
 }
 
 
 
 
-func commandExit(cfg *Config) error{
+func commandExit(cfg *Config, args ...string) error{
 	fmt.Println("Closing the Pokedex... Gooddbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(cfg *Config) error{
+func commandHelp(cfg *Config, args ...string) error{
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage")
 	for key, val := range validCommands{
@@ -33,7 +33,7 @@ func commandHelp(cfg *Config) error{
 	return nil
 }
 
-func commandMapf(cfg *Config) error{
+func commandMapf(cfg *Config, args ...string) error{
 	
 	//get the initial response
 
@@ -58,7 +58,7 @@ func commandMapf(cfg *Config) error{
 	return nil
 }
 
-func commandMapb(cfg *Config) error{
+func commandMapb(cfg *Config, args ...string) error{
 	
 	if cfg.previousURL == nil{
 		return errors.New("You are on the first page")
@@ -79,5 +79,27 @@ func commandMapb(cfg *Config) error{
 	cfg.previousURL = locations.Previous
 	return nil
 
+}
+
+func commandExplore(cfg *Config, args ...string) error{
+	
+	//build full url
+	if len(args) == 0{
+		fmt.Println("You must proved a location")
+	}
+	areaName := args[0]
+
+	baseUrl := "https://pokeapi.co/api/v2/location-area/"
+	exploreUrl := baseUrl + areaName
+	pokeNames, err := cfg.Client.ExploreArea(exploreUrl)
+	if err != nil{
+		return errors.New("Issue with fetching API")
+	}
+
+	for _, pokemonName := range pokeNames.Names {
+		fmt.Println(pokemonName.Name)
+		}
+	
+		return nil
 }
 

@@ -45,6 +45,11 @@ func main(){
 			description: "Gives locations of pokemon",
 			callback: commandMapb,
 		},
+		"explore":{
+			name:"explore",
+			description: "Find out what pokemon are in the area",
+			callback: commandExplore,
+		},
 	}			
 	
 	}()
@@ -70,12 +75,19 @@ func main(){
 
 		//capture first word of input
 		cmd, ok := validCommands[cleanedScan[0]]
+		
 		if !ok{
 			fmt.Println("Unknown Command")
 			continue
 		}else{
+
+			var args []string
+			if len(cleanedScan) > 1{
+				args = cleanedScan[1:]
+			}
+
 			//act on the action of the command
-			if err := cmd.callback(&init_config); err != nil{
+			if err := cmd.callback(&init_config, args...); err != nil{
 				fmt.Println(err)
 			}
 		}
