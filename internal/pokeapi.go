@@ -25,45 +25,26 @@ type ExploreAreaResponse struct {
 	PokemonEncounters    []PokemonEncounter    `json:"pokemon_encounters"`    
 }
 
-type EncounterMethodRate struct {
-	EncounterMethod Location                           `json:"encounter_method"`
-	VersionDetails  []EncounterMethodRateVersionDetail `json:"version_details"` 
-}
 
 type Location struct {
 	Name string `json:"name"`
-}
-
-type EncounterMethodRateVersionDetail struct {
-	Rate    int64    `json:"rate"`   
-	Version Location `json:"version"`
-}
-
-type Name struct {
-	Language Location `json:"language"`
-	Name     string   `json:"name"`    
 }
 
 type PokemonEncounter struct {
 	Pokemon        Location                        `json:"pokemon"`        
 }
 
-type PokemonEncounterVersionDetail struct {
-	EncounterDetails []EncounterDetail `json:"encounter_details"`
-	MaxChance        int64             `json:"max_chance"`       
-	Version          Location          `json:"version"`          
+type Pokemon struct{
+	BaseExperience int `json:"base_experience"`
+	Height int `json:"height"`
+	Weight int `json:"weight"`
+	Stats []struct{
+		BaseStat int `json:"base_stat"`
+		Stat []struct{
+			Name string `json:"name"`
+		}`json:"stat"`
+	}`json:"stats"`
 }
-
-type EncounterDetail struct {
-	Chance          int64         `json:"chance"`          
-	ConditionValues []interface{} `json:"condition_values"`
-	MaxLevel        int64         `json:"max_level"`       
-	Method          Location      `json:"method"`          
-	MinLevel        int64         `json:"min_level"`       
-}
-
-
-
 
 type Client struct{
 	httpClient http.Client
@@ -153,3 +134,41 @@ func (c *Client) ExploreArea(url string) (ExploreAreaResponse, error){
 
 
 }
+
+func (c *Client) CatchPokemon(url string) (Pokemon, error){
+	pokeResp := Pokemon{}
+	cacheResp, found := c.cache.Get(url)
+
+		if found{
+		//will get the raw bytes from the response
+		if err := json.Unmarshal(cacheResp, &pokeResp); err != nil{
+			return Pokemon{}, err
+		}
+
+		return pokeResp, nil
+	}
+
+	client := c.httpClient
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil{
+		return Pokemon{}, err
+	}
+
+	res, err := client.Do(req)
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	
+	if err := json.Unmarshal(body, &pokeResp); err != nil{
+		return Pokemon{}, err
+	}
+
+	//cache the response
+	c.cache.Add(url, body)
+	
+	return pokeResp, nil
+
+
+}
+
+
