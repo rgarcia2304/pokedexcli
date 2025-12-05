@@ -19,6 +19,7 @@ type Config struct{
 	previousURL *string
 	pokeapi.Client 
 	pokecache.Cache
+	pokeDeck map[string]pokeapi.Pokemon
 }
 
 func main(){
@@ -50,6 +51,16 @@ func main(){
 			description: "Find out what pokemon are in the area",
 			callback: commandExplore,
 		},
+		"catch":{
+			name: "catch",
+			description: "Performs a catching action on a pokemon",
+			callback: commandCatch, 
+		},
+		"inspect":{
+			name: "inspect",
+			description: "View all the pokemon in your deck",
+			callback: commandInspect, 
+		},
 	}			
 	
 	}()
@@ -59,9 +70,10 @@ func main(){
 	//initialize the cache that will be used 
 	pokemonCache := pokecache.NewCache(time.Second * 5)
 	client := pokeapi.NewClient(time.Second * 10, pokemonCache)
-	baseURL := "https://pokeapi.co/api/v2/location-area/" 
+	baseURL := "https://pokeapi.co/api/v2/location-area/"
+	deck := make(map[string]pokeapi.Pokemon)
 	
-	init_config := Config{nextURL: &baseURL, Client: client}
+	init_config := Config{nextURL: &baseURL, Client: client, pokeDeck: deck}
 	
 	
 	//start scanning for input 

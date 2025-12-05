@@ -5,6 +5,7 @@ import(
 	"os"
 	"fmt"
 	"errors"
+	"math/rand"
 )
 
 
@@ -97,9 +98,86 @@ func commandExplore(cfg *Config, args ...string) error{
 	}
 
 	for _, pokemonName := range pokeNames.PokemonEncounters{
-		fmt.Println(pokemonName)
+		fmt.Println(pokemonName.Pokemon.Name)
 		}
 	
-		return nil
+	return nil
 }
 
+func commandCatch(cfg *Config, args ...string) error{
+	
+	//build full url
+	if len(args) == 0{
+		fmt.Println("You must provide a pokemon to catch")
+	}
+	pokemonName := args[0]
+
+	//before even hitting cache if pokemon is caught don't let them catch more
+	_, ok := cfg.pokeDeck[pokemonName]
+	if ok{
+		return errors.New("Already have caught this pokemon")
+	}
+
+	baseUrl := "https://pokeapi.co/api/v2/pokemon/"
+	pokeUrl := baseUrl + pokemonName
+	pokeResp, err := cfg.Client.CatchPokemon(pokeUrl)
+	
+	if err != nil{
+		return errors.New("Issue with fetching API")
+	}
+	
+	val := fmt.Sprintf("This is the pokemon xp %v", pokeResp.BaseExperience)
+	fmt.Println(val)
+
+	//process whether it can be caught or not 
+        pokeBallNumber := rand.Intn(150) 
+	fmt.Println("Throwing a ball at " + pokemonName)
+	fmt.Println(pokeBallNumber)
+	
+	if pokeBallNumber >= pokeResp.BaseExperience{
+		//add this to the pokemon deck 
+		cfg.pokeDeck[pokemonName] = pokeResp
+		fmt.Println(pokemonName + " was caught!")
+	}else{
+		fmt.Println(pokemonName + " escaped")
+	}
+
+	return nil
+}
+
+func commandInspect(cfg *Config, args ...string) error{
+	
+	//build full url
+	if len(args) == 0{
+		fmt.Println("You must provide a pokemon to catch")
+	}
+	pokemonName := args[0]
+
+	//before even hitting cache if pokemon is caught don't let them catch more
+	pokeInfo, ok := cfg.pokeDeck[pokemonName]
+	if !ok{
+		return errors.New("You do not have this Pokemon")
+	}
+
+	//Now loop through the stats and format 
+	fmt.Println("Name: " + pokemonName)
+	heightValue := fmt.Sprintf("Height: %v", pokeInfo.Height)
+	fmt.Println(heightValue)
+	weightValue := fmt.Sprintf("Weight: %v", pokeInfo.Weight)
+	fmt.Println(weightValue)
+
+	//now loop over the different stats
+	fmt.Println("Stats:")
+	for _, val := range pokeInfo.Stats{
+		res := fmt.Sprintf("   -%v: %v", val.Stat.Name, val.BaseStat)
+		fmt.Println(res)
+	}
+
+	fmt.Println("Types:")
+	for _, val := range pokeInfo.Types{
+		res := fmt.Sprintf("   -%v", val.Type.Name)
+		fmt.Println(res)
+	}
+		
+	return nil
+}
