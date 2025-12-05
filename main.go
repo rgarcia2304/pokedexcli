@@ -58,8 +58,14 @@ func main(){
 		},
 		"inspect":{
 			name: "inspect",
-			description: "View all the pokemon in your deck",
+			description: "View info about pokemon that you have caught",
 			callback: commandInspect, 
+		},
+		"pokedeck":{
+			name: "pokedeck", 
+			description: "View all the pokemon that you have caught",
+			callback: commandPokedeck,
+			
 		},
 	}			
 	

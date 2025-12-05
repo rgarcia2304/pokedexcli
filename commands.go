@@ -149,7 +149,7 @@ func commandInspect(cfg *Config, args ...string) error{
 	
 	//build full url
 	if len(args) == 0{
-		fmt.Println("You must provide a pokemon to catch")
+		return errors.New("You must provide a pokemon to catch")
 	}
 	pokemonName := args[0]
 
@@ -179,5 +179,22 @@ func commandInspect(cfg *Config, args ...string) error{
 		fmt.Println(res)
 	}
 		
+	return nil
+}
+
+func commandPokedeck(cfg *Config, args ...string) (error){
+	if len(args) > 0{
+		return errors.New("Invalid Command Sequence")
+	}
+
+	if len(cfg.pokeDeck) == 0 {
+		return errors.New("Your Pokedeck is empty")
+	}
+	
+	fmt.Println("Your Pokemon:")
+	for pokemon, _:= range cfg.pokeDeck{
+		fmt.Println("- " + pokemon)
+	}
+	
 	return nil
 }
