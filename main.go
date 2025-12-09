@@ -8,8 +8,9 @@ import(
 "os"
 "github.com/rgarcia2304/pokedexcli/internal"
 "github.com/rgarcia2304/pokedexcli/internal/pokecache"
-
+"golang.org/x/term"
 "time"
+"log"
 )
 
 var validCommands map[string]cliCommand 
@@ -20,6 +21,16 @@ type Config struct{
 	pokeapi.Client 
 	pokecache.Cache
 	pokeDeck map[string]pokeapi.Pokemon
+}
+
+type REPL struct{
+	history []string
+	historyIndex int
+	buffer []rune
+	hasDraft bool
+	draftBeforeHistory string
+	prompt string
+	
 }
 
 func main(){
@@ -70,8 +81,6 @@ func main(){
 	}			
 	
 	}()
-
-	//initialize all the config struct fields 
 	
 	//initialize the cache that will be used 
 	pokemonCache := pokecache.NewCache(time.Second * 5)
@@ -80,35 +89,69 @@ func main(){
 	deck := make(map[string]pokeapi.Pokemon)
 	
 	init_config := Config{nextURL: &baseURL, Client: client, pokeDeck: deck}
-	
+	terminalREPL := REPL{historyIndex: 0, prompt: "Pokedeck> " }	
 	
 	//start scanning for input 
-	scanner := bufio.NewScanner(os.Stdin)
+	//scanner := bufio.NewScanner(os.Stdin)
+
+	//put terminal in raw mode
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil{
+		log.Fatalf("failed to put terminal in raw mode: %v", err)
+	}
+	
+	defer term.Restore(int(os.Stdin.Fd()), oldState)
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print(terminalREPL.prompt)
 	for{
-		fmt.Print("Pokedex > ")
-		scanner.Scan()
-		scannerVal := scanner.Text()
-		//clean the scanned value
-		cleanedScan := cleanInput(scannerVal)
+		//if an arrow command was given then have it put that command in the scanner 
 
-		//capture first word of input
-		cmd, ok := validCommands[cleanedScan[0]]
+		b, err := reader.ReadByte()
+		if err != nil{
+			fmt.Fprintf(os.Stderr, "read error: %v\n", err)
+		}
+
+		switch b{
+
+		case '\r', '\n':
+			handleEnter(&init_config, &terminalREPL)
 		
-		if !ok{
-			fmt.Println("Unknown Command")
-			continue
-		}else{
+		case 127:
+			handleBackSpace(&terminalREPL)
 
-			var args []string
-			if len(cleanedScan) > 1{
-				args = cleanedScan[1:]
+		case 27:
+			seq1, _ := reader.ReadByte()
+			seq2, _ := reader.ReadByte()
+			if seq1 == '['{
+				switch seq2{
+				case 'A':
+					handleUp(&terminalREPL)
+				case 'B': 
+					handleDown(&terminalREPL)
+				}
 			}
-
-			//act on the action of the command
-			if err := cmd.callback(&init_config, args...); err != nil{
-				fmt.Println(err)
+		default:
+			if b >=32 && b < 127{
+				terminalREPL.buffer = append(terminalREPL.buffer, rune(b))
+				fmt.Printf("%c", b)
 			}
 		}
-	}
 
+		//fmt.Print("Pokedex > ")
+		//scanner.Scan()
+
+		//scannerVal := scanner.Text()
+
+		//clean the scanned value
+		//cleanedScan := cleanInput(scannerVal)
+
+		//capture first word of input
+		//cmd, ok := validCommands[cleanedScan[0]]
+
+		//add the word to the command history slice
+		//commandHistory = append(commandHistory, cmd)
+
+	}
+	
 }

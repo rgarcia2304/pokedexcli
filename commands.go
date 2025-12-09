@@ -19,17 +19,21 @@ type cliCommand struct{
 
 
 func commandExit(cfg *Config, args ...string) error{
-	fmt.Println("Closing the Pokedex... Gooddbye!")
+	fmt.Print("Closing the Pokedex... Gooddbye!")
+	fmt.Print("\r\n")
 	os.Exit(0)
 	return nil
 }
 
 func commandHelp(cfg *Config, args ...string) error{
 	fmt.Println("Welcome to the Pokedex!")
+	fmt.Print("\r\n")
 	fmt.Println("Usage")
+	fmt.Print("\r\n")
 	for key, val := range validCommands{
 		help_menu := fmt.Sprintf("%v: %v", key, val.description)
-		fmt.Println(help_menu)
+		fmt.Print(help_menu)
+		fmt.Print("\r\n")
 	}
 	return nil
 }
@@ -49,7 +53,8 @@ func commandMapf(cfg *Config, args ...string) error{
 	}
 
 	for _, location:= range locations.Results{
-			fmt.Println(location.Name)
+			fmt.Print(location.Name)
+			fmt.Print("\r\n")
 		}
 	
 	
@@ -71,7 +76,8 @@ func commandMapb(cfg *Config, args ...string) error{
 	}
 
 	for _, location := range locations.Results{
-		fmt.Println(location.Name)
+		fmt.Print(location.Name)
+		fmt.Print("\r\n")
 		}
 	
 	
@@ -96,9 +102,10 @@ func commandExplore(cfg *Config, args ...string) error{
 	if err != nil{
 		return errors.New("Issue with fetching API")
 	}
-
+	
 	for _, pokemonName := range pokeNames.PokemonEncounters{
-		fmt.Println(pokemonName.Pokemon.Name)
+		fmt.Print(pokemonName.Pokemon.Name)
+		fmt.Print("\r\n")
 		}
 	
 	return nil
@@ -127,19 +134,22 @@ func commandCatch(cfg *Config, args ...string) error{
 	}
 	
 	val := fmt.Sprintf("This is the pokemon xp %v", pokeResp.BaseExperience)
-	fmt.Println(val)
+	fmt.Print(val)
+	fmt.Print("\r\n")
 
 	//process whether it can be caught or not 
         pokeBallNumber := rand.Intn(150) 
-	fmt.Println("Throwing a ball at " + pokemonName)
-	fmt.Println(pokeBallNumber)
+	fmt.Print("Throwing a ball at " + pokemonName)
+	fmt.Print("\r\n")
 	
 	if pokeBallNumber >= pokeResp.BaseExperience{
 		//add this to the pokemon deck 
 		cfg.pokeDeck[pokemonName] = pokeResp
-		fmt.Println(pokemonName + " was caught!")
+		fmt.Print(pokemonName + " was caught!")
+		fmt.Print("\r\n")
 	}else{
 		fmt.Println(pokemonName + " escaped")
+		fmt.Print("\r\n")
 	}
 
 	return nil
@@ -160,23 +170,32 @@ func commandInspect(cfg *Config, args ...string) error{
 	}
 
 	//Now loop through the stats and format 
-	fmt.Println("Name: " + pokemonName)
+	fmt.Print("Name: " + pokemonName)
+	fmt.Print("\r\n")
+	
 	heightValue := fmt.Sprintf("Height: %v", pokeInfo.Height)
-	fmt.Println(heightValue)
+	fmt.Print(heightValue)
+	fmt.Print("\r\n")
+
 	weightValue := fmt.Sprintf("Weight: %v", pokeInfo.Weight)
-	fmt.Println(weightValue)
+	fmt.Print(weightValue)
+	fmt.Print("\r\n")
 
 	//now loop over the different stats
-	fmt.Println("Stats:")
+	fmt.Print("Stats:")
+	fmt.Print("\r\n")
 	for _, val := range pokeInfo.Stats{
 		res := fmt.Sprintf("   -%v: %v", val.Stat.Name, val.BaseStat)
-		fmt.Println(res)
+		fmt.Print(res)
+		fmt.Print("\r\n")
 	}
 
-	fmt.Println("Types:")
+	fmt.Print("Types:")
+	fmt.Print("\r\n")
 	for _, val := range pokeInfo.Types{
 		res := fmt.Sprintf("   -%v", val.Type.Name)
-		fmt.Println(res)
+		fmt.Print(res)
+		fmt.Print("\r\n")
 	}
 		
 	return nil
@@ -191,9 +210,11 @@ func commandPokedeck(cfg *Config, args ...string) (error){
 		return errors.New("Your Pokedeck is empty")
 	}
 	
-	fmt.Println("Your Pokemon:")
+	fmt.Print("Your Pokemon:")
+	fmt.Print("\r\n")
 	for pokemon, _:= range cfg.pokeDeck{
-		fmt.Println("- " + pokemon)
+		fmt.Print("- " + pokemon)
+		fmt.Print("\r\n")
 	}
 	
 	return nil
