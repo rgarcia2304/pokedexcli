@@ -34,7 +34,7 @@ func handleEnter(c *Config, r *REPL){
 	}
 
 	//add command to history
-	r.history = append(r.history, parsedInput[0])
+	r.history = append(r.history, trimmed)
 	
 	r.buffer = r.buffer[:0]
 	r.historyIndex = len(r.history)

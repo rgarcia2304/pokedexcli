@@ -148,7 +148,7 @@ func commandCatch(cfg *Config, args ...string) error{
 		fmt.Print(pokemonName + " was caught!")
 		fmt.Print("\r\n")
 	}else{
-		fmt.Println(pokemonName + " escaped")
+		fmt.Print(pokemonName + " escaped")
 		fmt.Print("\r\n")
 	}
 
@@ -240,9 +240,10 @@ func commandBattle(cfg *Config, args ...string) (error){
 	cfg.Battle.OpponentName = args[1]
 	cfg.Battle.ChallengerName = args[0]
 	cfg.Battle.Challenger = challengerPokeStats
-	cfg.Battle.Opponent = challengerPokeStats
+	cfg.Battle.Opponent = opponentPokeStats
 
-	battleResult := cfg.Battle.simulateBattle()
+	battleResult := cfg.Battle.SimulateBattle()
 	fmt.Print(battleResult)
+	return nil
 	
 }

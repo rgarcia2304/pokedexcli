@@ -9,20 +9,20 @@ import(
 type Battle struct{
 	ChallengerName string
 	OpponentName string
-	Challenger Pokemon 
-	Opponent Pokemon
+	Challenger pokeapi.Pokemon 
+	Opponent pokeapi.Pokemon
 }
 
 
-func (b *Battle) simulateBattle() (string){
+func (b *Battle) SimulateBattle() (string){
 
-	if Challenger == nil || Opponent == nil{
+	if b == nil{
 		return fmt.Sprintf("There are no opponents")
 	}
 
-	turn := 0 
-	challengerHp := b.Challenger.Stats[0].BaseStat
-	opponentHp := b.Opponent.Stats[0].BaseStat
+	turn := 0  
+	challengerHp := float64(b.Challenger.Stats[0].BaseStat)
+	opponentHp := float64(b.Opponent.Stats[0].BaseStat)
 	
 	//decide who goes first in the battle, decided by speed
 	if b.Challenger.Stats[5].BaseStat > b.Opponent.Stats[5].BaseStat{
@@ -33,11 +33,11 @@ func (b *Battle) simulateBattle() (string){
 
 	for{
 		switch turn{
-			case turn == 0: //challenger is attacknig 
-				damageFromAttack := float(b.Challenger.Stats[1].BaseStat / b.Opponent.Stats[2].BaseStat) * float(b.Challenger.Stats[1].BaseStat
+			case 0: //challenger is attacknig 
+				damageFromAttack := float64(b.Challenger.Stats[1].BaseStat / b.Opponent.Stats[2].BaseStat) * float64(b.Challenger.Stats[1].BaseStat)
 				opponentHp -= damageFromAttack 
-			case turn == 1: // oponent is attacking
-				damageFromAttack := float(b.Opponent.Stats[1].BaseStat / b.Challenger.Stats[2].BaseStat) * float(b.Opponent.Stats[1].BaseStat
+			case 1: // oponent is attacking
+				damageFromAttack := float64(b.Opponent.Stats[1].BaseStat / b.Challenger.Stats[2].BaseStat) * float64(b.Opponent.Stats[1].BaseStat)
 				challengerHp -= damageFromAttack
 			default:
 				return fmt.Sprintf("This should never happen \r\n")

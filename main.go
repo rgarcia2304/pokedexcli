@@ -80,6 +80,12 @@ func main(){
 			callback: commandPokedeck,
 			
 		},
+		"battle":{
+			name: "battle", 
+			description: "Include two pokemon in your deck to battle out with, provide both of them as command line arguments",
+			callback: commandBattle,
+			
+		},
 	}			
 	
 	}()
