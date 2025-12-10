@@ -8,6 +8,7 @@ import(
 "os"
 "github.com/rgarcia2304/pokedexcli/internal"
 "github.com/rgarcia2304/pokedexcli/internal/pokecache"
+"github.com/rgarcia2304/pokedexcli/internal/pokebattle"
 "golang.org/x/term"
 "time"
 "log"
@@ -21,6 +22,7 @@ type Config struct{
 	pokeapi.Client 
 	pokecache.Cache
 	pokeDeck map[string]pokeapi.Pokemon
+	pokebattle.Battle
 }
 
 type REPL struct{
@@ -91,10 +93,7 @@ func main(){
 	init_config := Config{nextURL: &baseURL, Client: client, pokeDeck: deck}
 	terminalREPL := REPL{historyIndex: 0, prompt: "Pokedeck> " }	
 	
-	//start scanning for input 
-	//scanner := bufio.NewScanner(os.Stdin)
-
-	//put terminal in raw mode
+		//put terminal in raw mode
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil{
 		log.Fatalf("failed to put terminal in raw mode: %v", err)
@@ -138,20 +137,6 @@ func main(){
 			}
 		}
 
-		//fmt.Print("Pokedex > ")
-		//scanner.Scan()
-
-		//scannerVal := scanner.Text()
-
-		//clean the scanned value
-		//cleanedScan := cleanInput(scannerVal)
-
-		//capture first word of input
-		//cmd, ok := validCommands[cleanedScan[0]]
-
-		//add the word to the command history slice
-		//commandHistory = append(commandHistory, cmd)
-
-	}
+		}
 	
 }

@@ -219,3 +219,30 @@ func commandPokedeck(cfg *Config, args ...string) (error){
 	
 	return nil
 }
+
+func commandBattle(cfg *Config, args ...string) (error){
+	if len(args) != 2 {
+		return errors.New("You must include two pokemon to battle")
+	}
+
+	challengerPokeStats, found := cfg.pokeDeck[args[0]]
+	
+	if !found{
+		return errors.New("Please select a challenger pokemon in your deck to battle with")
+	}
+
+	opponentPokeStats, found := cfg.pokeDeck[args[1]]
+	
+	if !found{
+		return errors.New(" Please select an opponent pokemon in your deck to battle with")
+	}
+	
+	cfg.Battle.OpponentName = args[1]
+	cfg.Battle.ChallengerName = args[0]
+	cfg.Battle.Challenger = challengerPokeStats
+	cfg.Battle.Opponent = challengerPokeStats
+
+	battleResult := cfg.Battle.simulateBattle()
+	fmt.Print(battleResult)
+	
+}
