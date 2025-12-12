@@ -242,14 +242,31 @@ func (b *Battle) SimulateBattle() (string){
 		switch turn{
 			case 0: //challenger is attacking
 				fmt.Print(b.ChallengerName + " is attacking \r\n")
-				damageFromAttack := float64(b.Challenger.Stats[1].BaseStat / b.Opponent.Stats[2].BaseStat) * float64(b.Challenger.Stats[1].BaseStat) * CalculateDamage(b.Challenger, b.Opponent) * randomMultiplier
+
+				damageFromAttack := (float64(b.Challenger.Stats[1].BaseStat) / float64(b.Opponent.Stats[2].BaseStat)) * float64(b.Challenger.Stats[1].BaseStat) * CalculateDamage(b.Challenger, b.Opponent) * randomMultiplier
+				fmt.Print(damageFromAttack)
+				fmt.Print("\r\n")
 				attackMsg := fmt.Sprintf("%v just sent an attack with %v \r\n", b.ChallengerName, damageFromAttack)
 				fmt.Print(attackMsg)
 				opponentHp -= damageFromAttack 
 			case 1: // oponent is attacking
 				fmt.Print(b.OpponentName + " is attacking \r\n")
-				damageFromAttack := float64(b.Opponent.Stats[1].BaseStat / b.Challenger.Stats[2].BaseStat) * float64(b.Opponent.Stats[1].BaseStat) * CalculateDamage(b.Opponent, b.Challenger) * randomMultiplier
-				attackMsg := fmt.Sprintf("%v just sent an attack with %v \r\n", b.ChallengerName, damageFromAttack)
+				damageFromAttack := (float64(b.Opponent.Stats[1].BaseStat) / float64(b.Challenger.Stats[2].BaseStat)) * float64(b.Opponent.Stats[1].BaseStat) * CalculateDamage(b.Opponent, b.Challenger) * randomMultiplier
+				attackMsg := fmt.Sprintf("%v just sent an attack with %v \r\n", b.OpponentName, damageFromAttack)	
+				fmt.Print(float64(b.Opponent.Stats[1].BaseStat / b.Challenger.Stats[2].BaseStat))
+
+				fmt.Print("\r\n")
+				fmt.Print(float64(b.Challenger.Stats[2].BaseStat))
+
+				fmt.Print("\r\n")
+				fmt.Print(float64(b.Opponent.Stats[1].BaseStat))
+
+				fmt.Print("\r\n")
+				fmt.Print(CalculateDamage(b.Opponent, b.Challenger))
+				fmt.Print("\r\n")
+				fmt.Print(randomMultiplier)
+				fmt.Print("\r\n")
+
 				fmt.Print(attackMsg)
 				challengerHp -= damageFromAttack
 			default:
