@@ -1,4 +1,4 @@
-package persist 
+package pokesave 
 
 import "sync"
 

@@ -2,11 +2,11 @@ package main
 
 import(
 
-	"os"
-	"fmt"
-	"errors"
-	"math/rand"
-	"github.com/rgarcia2304/pokedexcli/internal/pokesave"
+"os"
+"fmt"
+"errors"
+"math/rand"
+"github.com/rgarcia2304/pokedexcli/internal/pokesave"
 )
 
 

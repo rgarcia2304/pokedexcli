@@ -2,9 +2,10 @@ package main
 
 import(
 
-	"errors"
-	"internal/pokesave"
-	"internal/pokeapi"
+"errors"
+"internal/pokesave"
+"github.com/rgarcia2304/pokedexcli/internal"
+"github.com/rgarcia2304/pokedexcli/internal/pokesave"
 )
 
 
