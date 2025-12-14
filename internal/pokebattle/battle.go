@@ -253,20 +253,7 @@ func (b *Battle) SimulateBattle() (string){
 				fmt.Print(b.OpponentName + " is attacking \r\n")
 				damageFromAttack := (float64(b.Opponent.Stats[1].BaseStat) / float64(b.Challenger.Stats[2].BaseStat)) * float64(b.Opponent.Stats[1].BaseStat) * CalculateDamage(b.Opponent, b.Challenger) * randomMultiplier
 				attackMsg := fmt.Sprintf("%v just sent an attack with %v \r\n", b.OpponentName, damageFromAttack)	
-				fmt.Print(float64(b.Opponent.Stats[1].BaseStat / b.Challenger.Stats[2].BaseStat))
-
-				fmt.Print("\r\n")
-				fmt.Print(float64(b.Challenger.Stats[2].BaseStat))
-
-				fmt.Print("\r\n")
-				fmt.Print(float64(b.Opponent.Stats[1].BaseStat))
-
-				fmt.Print("\r\n")
-				fmt.Print(CalculateDamage(b.Opponent, b.Challenger))
-				fmt.Print("\r\n")
-				fmt.Print(randomMultiplier)
-				fmt.Print("\r\n")
-
+			
 				fmt.Print(attackMsg)
 				challengerHp -= damageFromAttack
 			default:
