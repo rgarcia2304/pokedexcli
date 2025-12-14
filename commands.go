@@ -6,7 +6,7 @@ import(
 	"fmt"
 	"errors"
 	"math/rand"
-	"rgarcia2304/pokedexcli/internal/pokesave"
+	"github.com/rgarcia2304/pokedexcli/internal/pokesave"
 )
 
 
