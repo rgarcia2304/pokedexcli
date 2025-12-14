@@ -35,6 +35,7 @@ type REPL struct{
 	
 }
 
+
 func main(){
 	
 	func() {
@@ -86,6 +87,12 @@ func main(){
 			callback: commandBattle,
 			
 		},
+		"save":{
+			name: "save", 
+			description: "allows you to save pokemon in your deck between sessions",
+			callback: commandSave,
+			
+		},
 	}			
 	
 	}()
@@ -96,7 +103,11 @@ func main(){
 	baseURL := "https://pokeapi.co/api/v2/location-area/"
 	deck := make(map[string]pokeapi.Pokemon)
 	
+	//load the saved pokeDeck
 	init_config := Config{nextURL: &baseURL, Client: client, pokeDeck: deck}
+	//load the saved pokedeck 
+	loadSave(init_config)
+
 	terminalREPL := REPL{historyIndex: 0, prompt: "Pokedeck> " }	
 	
 		//put terminal in raw mode

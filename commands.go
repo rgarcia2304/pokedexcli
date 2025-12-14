@@ -6,6 +6,7 @@ import(
 	"fmt"
 	"errors"
 	"math/rand"
+	"rgarcia2304/pokedexcli/internal/pokesave"
 )
 
 
@@ -246,4 +247,24 @@ func commandBattle(cfg *Config, args ...string) (error){
 	fmt.Print(battleResult)
 	return nil
 	
+}
+
+func commandSave(cfg *Config)(error){
+	//save the pokedeck to disk 
+	deck := make(map[string]pokeapi.Pokemon
+
+	if len(cfg.pokeDeck) < 1{
+		return errors.New("There is no point of saving you have no pokemon in your deck")
+	}
+
+	for key, val := range cfg.pokedeck{
+		//populate the saved deck 
+		pokeSaveDeck.savedDeck[key] = val
+	}
+
+	if err := pokesave.Save("./file.tmp", deck); err != nil{
+		return errors.New("issue with saving at save location")
+	}
+	
+	return nil
 }
