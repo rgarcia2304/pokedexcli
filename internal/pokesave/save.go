@@ -1,6 +1,12 @@
 package pokesave 
 
-import "sync"
+import(
+"sync"
+"io"
+"bytes"
+"os"
+"encoding/json"
+)
 
 var lock sync.Mutex
 
@@ -12,6 +18,9 @@ var Marshal = func(v interface{}) (io.Reader, error){
 	return bytes.NewReader(b), nil
 }
 //Save saves a representation of v to the file at path. 
+var Unmarshal = func(r io.Reader, v interface{}) error {
+  return json.NewDecoder(r).Decode(v)
+}
 
 func Save(path string, v interface{}) error{
 	lock.Lock()
@@ -37,6 +46,11 @@ func Load(path string, v interface{}) error{
 	if err != nil{
 		return err
 	}
+
+	if err != nil{
+		return err
+	}
+
 	defer f.Close()
 	return Unmarshal(f,v)
 }

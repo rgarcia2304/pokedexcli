@@ -106,7 +106,7 @@ func main(){
 	//load the saved pokeDeck
 	init_config := Config{nextURL: &baseURL, Client: client, pokeDeck: deck}
 	//load the saved pokedeck 
-	loadSave(init_config)
+	loadSave(&init_config)
 
 	terminalREPL := REPL{historyIndex: 0, prompt: "Pokedeck> " }	
 	

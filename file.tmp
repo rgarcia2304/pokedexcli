@@ -1,0 +1,107 @@
+{
+	"bulbasaur": {
+		"base_experience": 64,
+		"height": 7,
+		"weight": 69,
+		"stats": [
+			{
+				"base_stat": 45,
+				"stat": {
+					"name": "hp"
+				}
+			},
+			{
+				"base_stat": 49,
+				"stat": {
+					"name": "attack"
+				}
+			},
+			{
+				"base_stat": 49,
+				"stat": {
+					"name": "defense"
+				}
+			},
+			{
+				"base_stat": 65,
+				"stat": {
+					"name": "special-attack"
+				}
+			},
+			{
+				"base_stat": 65,
+				"stat": {
+					"name": "special-defense"
+				}
+			},
+			{
+				"base_stat": 45,
+				"stat": {
+					"name": "speed"
+				}
+			}
+		],
+		"types": [
+			{
+				"type": {
+					"name": "grass"
+				}
+			},
+			{
+				"type": {
+					"name": "poison"
+				}
+			}
+		]
+	},
+	"pikachu": {
+		"base_experience": 112,
+		"height": 4,
+		"weight": 60,
+		"stats": [
+			{
+				"base_stat": 35,
+				"stat": {
+					"name": "hp"
+				}
+			},
+			{
+				"base_stat": 55,
+				"stat": {
+					"name": "attack"
+				}
+			},
+			{
+				"base_stat": 40,
+				"stat": {
+					"name": "defense"
+				}
+			},
+			{
+				"base_stat": 50,
+				"stat": {
+					"name": "special-attack"
+				}
+			},
+			{
+				"base_stat": 50,
+				"stat": {
+					"name": "special-defense"
+				}
+			},
+			{
+				"base_stat": 90,
+				"stat": {
+					"name": "speed"
+				}
+			}
+		],
+		"types": [
+			{
+				"type": {
+					"name": "electric"
+				}
+			}
+		]
+	}
+}

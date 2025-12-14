@@ -7,6 +7,7 @@ import(
 "errors"
 "math/rand"
 "github.com/rgarcia2304/pokedexcli/internal/pokesave"
+"github.com/rgarcia2304/pokedexcli/internal"
 )
 
 
@@ -249,17 +250,21 @@ func commandBattle(cfg *Config, args ...string) (error){
 	
 }
 
-func commandSave(cfg *Config)(error){
+func commandSave(cfg *Config, args ...string) error{
+
+	if len(args) > 1{
+		return errors.New("This command has no arguments to pass")
+	}
 	//save the pokedeck to disk 
-	deck := make(map[string]pokeapi.Pokemon
+	deck := make(map[string]pokeapi.Pokemon)
 
 	if len(cfg.pokeDeck) < 1{
 		return errors.New("There is no point of saving you have no pokemon in your deck")
 	}
 
-	for key, val := range cfg.pokedeck{
+	for key, val := range cfg.pokeDeck{
 		//populate the saved deck 
-		pokeSaveDeck.savedDeck[key] = val
+		deck[key] = val
 	}
 
 	if err := pokesave.Save("./file.tmp", deck); err != nil{
